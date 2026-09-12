@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kontak Tersimpan</title>
+<link rel="stylesheet" href="/css/base.css?v=1.6.0">
+<link rel="stylesheet" href="/css/contacts.css?v=1.6.0">
+</head>
+<body class="contacts-page">
+  <div class="contacts-shell">
+    <header class="contacts-topbar">
+      <div>
+        <h1>Kontak Tersimpan</h1>
+        <p><%= contacts.length %> nomor tersimpan dari chat WhatsApp masuk.</p>
+      </div>
+      <div class="contacts-actions">
+        <a href="/" class="secondary-btn link-btn">← Inbox</a>
+        <form method="post" action="/contacts/lock">
+          <button type="submit" class="secondary-btn">Kunci</button>
+        </form>
+      </div>
+    </header>
+
+    <div class="contacts-tools">
+      <input id="contactSearch" type="search" placeholder="Cari nomor atau nama...">
+    </div>
+
+    <main class="contacts-table-wrap">
+      <table class="contacts-table" id="contactsTable">
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Nomor WhatsApp</th>
+            <th>Pertama Masuk</th>
+            <th>Terakhir Aktif</th>
+            <th>Pesan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (const c of contacts) { %>
+          <tr data-search="<%= [c.display_name,c.profile_name,c.phone,c.wa_id].filter(Boolean).join(' ').toLowerCase() %>">
+            <td>
+              <div class="contact-name"><%= c.display_name || c.profile_name || 'Tanpa Nama' %></div>
+            </td>
+            <td>
+              <div class="contact-phone"><%= c.phone %></div>
+              <div class="contact-waid">WA ID: <%= c.wa_id %></div>
+            </td>
+            <td><%= new Date(c.first_seen_at).toLocaleString('id-ID') %></td>
+            <td><%= new Date(c.last_seen_at).toLocaleString('id-ID') %></td>
+            <td>
+              <span class="contact-count"><%= c.total_messages %></span>
+              <div class="contact-subcount">Masuk <%= c.inbound_messages %> • Keluar <%= c.outbound_messages %></div>
+            </td>
+          </tr>
+          <% } %>
+          <% if (!contacts.length) { %>
+          <tr><td colspan="5" class="empty-contacts">Belum ada nomor kontak tersimpan.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+<script>
+const q=document.querySelector("#contactSearch");
+const rows=[...document.querySelectorAll("#contactsTable tbody tr[data-search]")];
+q?.addEventListener("input",()=>{
+  const s=q.value.trim().toLowerCase();
+  for(const row of rows){
+    row.style.display=row.dataset.search.includes(s)?"":"none";
+  }
+});
+</script>
+</body>
+</html>
