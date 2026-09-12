@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="id" class="inbox-html">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>WhatsApp Inbox</title>
+  <link rel="stylesheet" href="/css/base.css?v=2.2.0">
+  <link rel="stylesheet" href="/css/inbox.css?v=2.2.0">
+</head>
+<body class="inbox-page">
+<div class="wa-app" id="app">
+  <aside class="wa-sidebar">
+    <header class="wa-sidebar-header">
+      <div class="wa-brand-avatar">W</div>
+      <div class="wa-brand-copy">
+        <strong>WhatsApp Inbox</strong>
+        <span>Customer Service</span>
+      </div>
+      <a class="wa-header-icon" href="/contacts" title="Kontak tersimpan" aria-label="Kontak tersimpan">☷</a>
+      <form method="post" action="/logout" class="wa-logout-form">
+        <button class="wa-header-icon" type="submit" title="Keluar" aria-label="Keluar">↪</button>
+      </form>
+    </header>
+
+    <section class="wa-sidebar-controls">
+      <div class="wa-search">
+        <span class="wa-search-icon">⌕</span>
+        <input id="search" autocomplete="off" placeholder="Cari atau mulai chat baru">
+      </div>
+      <div class="wa-tabs" role="tablist">
+        <button class="wa-tab active" data-mode="inbox" type="button">Semua</button>
+        <button class="wa-tab" data-mode="archived" type="button">Diarsipkan</button>
+      </div>
+    </section>
+
+    <div id="conversationList" class="wa-conversation-list"></div>
+  </aside>
+
+  <main class="wa-main">
+    <div id="emptyState" class="wa-empty-state">
+      <div class="wa-empty-logo">W</div>
+      <h2>WhatsApp Inbox</h2>
+      <p>Pilih percakapan untuk mulai membalas member.</p>
+    </div>
+
+    <section id="chatView" class="wa-chat hidden">
+      <header class="wa-chat-header">
+        <button id="mobileBack" class="wa-mobile-back" type="button" aria-label="Kembali">‹</button>
+        <div class="wa-chat-avatar">W</div>
+        <div class="wa-chat-identity">
+          <strong id="chatName">-</strong>
+          <span id="chatPhone">-</span>
+        </div>
+        <div class="wa-chat-actions">
+          <button id="archiveBtn" class="wa-action-icon" type="button" title="Arsipkan chat" aria-label="Arsipkan chat">⌄</button>
+          <button id="toggleStatus" class="wa-outline-btn" type="button">Tutup chat</button>
+        </div>
+      </header>
+
+      <div id="messages" class="wa-messages"></div>
+
+      <div id="replyBar" class="wa-reply-bar hidden">
+        <div class="wa-reply-accent"></div>
+        <div class="wa-reply-content">
+          <strong>Membalas pesan</strong>
+          <span id="replyText"></span>
+        </div>
+        <button id="cancelReply" type="button" aria-label="Batal membalas">×</button>
+      </div>
+
+      <div id="attachmentBar" class="wa-attachment-bar hidden">
+        <div>
+          <strong>Lampiran</strong>
+          <span id="attachmentName"></span>
+        </div>
+        <button id="cancelAttachment" type="button" aria-label="Hapus lampiran">×</button>
+      </div>
+
+      <div id="sendError" class="wa-send-error hidden"></div>
+
+      <form id="composer" class="wa-composer">
+        <input id="fileInput" type="file" hidden
+               accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar">
+        <button id="attachBtn" class="wa-composer-icon" type="button" title="Lampirkan file" aria-label="Lampirkan file">＋</button>
+        <div class="wa-input-wrap">
+          <textarea id="messageInput" rows="1" placeholder="Ketik pesan" aria-label="Ketik pesan"></textarea>
+        </div>
+        <button id="sendBtn" class="wa-send-btn" type="submit" title="Kirim" aria-label="Kirim">➤</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/app.js?v=2.2.0"></script>
+</body>
+</html>
