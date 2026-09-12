@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="id" class="inbox-html">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>WhatsApp Inbox</title>
+  <link rel="stylesheet" href="/css/base.css?v=3.0.1">
+  <link rel="stylesheet" href="/css/inbox.css?v=3.0.1">
+</head>
+<body class="inbox-page">
+<div class="wa-app" id="app">
+  <aside class="wa-sidebar">
+    <header class="wa-sidebar-header">
+      <div class="wa-brand-avatar">W</div>
+      <div class="wa-brand-copy">
+        <strong>WhatsApp Inbox</strong>
+        <span>Customer Service</span>
+      </div>
+      <a class="wa-header-icon" href="/contacts" title="Kontak tersimpan" aria-label="Kontak tersimpan">☷</a>
+      <form method="post" action="/logout" class="wa-logout-form">
+        <button class="wa-header-icon" type="submit" title="Keluar" aria-label="Keluar">↪</button>
+      </form>
+    </header>
+
+    <section class="wa-sidebar-controls">
+      <div class="wa-search">
+        <span class="wa-search-icon">⌕</span>
+        <input id="search" autocomplete="off" placeholder="Cari atau mulai chat baru">
+      </div>
+      <div class="wa-tabs" role="tablist">
+        <button class="wa-tab active" data-mode="inbox" type="button">Semua</button>
+        <button class="wa-tab" data-mode="archived" type="button">Diarsipkan</button>
+      </div>
+    </section>
+
+    <div id="conversationList" class="wa-conversation-list"></div>
+  </aside>
+
+  <main class="wa-main">
+    <div id="emptyState" class="wa-empty-state">
+      <div class="wa-empty-logo">W</div>
+      <h2>WhatsApp Inbox</h2>
+      <p>Pilih percakapan untuk mulai membalas member.</p>
+    </div>
+
+    <section id="chatView" class="wa-chat hidden">
+      <header class="wa-chat-header">
+        <button id="mobileBack" class="wa-mobile-back" type="button" aria-label="Kembali">‹</button>
+        <div class="wa-chat-avatar">W</div>
+        <div class="wa-chat-identity">
+          <strong id="chatName">-</strong>
+          <span id="chatPhone">-</span>
+        </div>
+        <div class="wa-chat-actions">
+          <button id="manageSnippetsBtn" class="wa-outline-btn" type="button">Hashtag</button>
+          <button id="archiveBtn" class="wa-action-icon" type="button" title="Arsipkan chat" aria-label="Arsipkan chat">⌄</button>
+          <button id="toggleStatus" class="wa-outline-btn" type="button">Tutup chat</button>
+        </div>
+      </header>
+
+      <div id="messages" class="wa-messages"></div>
+
+      <div id="replyBar" class="wa-reply-bar hidden">
+        <div class="wa-reply-accent"></div>
+        <div class="wa-reply-content">
+          <strong>Membalas pesan</strong>
+          <span id="replyText"></span>
+        </div>
+        <button id="cancelReply" type="button" aria-label="Batal membalas">×</button>
+      </div>
+
+      <div id="attachmentBar" class="wa-attachment-bar hidden">
+        <div id="attachmentPreview" class="attachment-preview"></div>
+        <div class="attachment-copy">
+          <strong>Lampiran</strong>
+          <span id="attachmentName"></span>
+        </div>
+        <button id="cancelAttachment" type="button" aria-label="Hapus lampiran">×</button>
+      </div>
+
+      <div id="sendError" class="wa-send-error hidden"></div>
+
+      <form id="composer" class="wa-composer" autocomplete="off">
+        <input id="fileInput" type="file" hidden
+               accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar">
+        <button id="attachBtn" class="wa-composer-icon" type="button" title="Lampirkan file" aria-label="Lampirkan file">＋</button>
+        <button id="hashtagBtn" class="wa-composer-icon" type="button" title="Balasan hashtag" aria-label="Balasan hashtag">#</button>
+        <div class="wa-input-wrap">
+          <textarea id="messageInput" rows="1" placeholder="Ketik pesan" aria-label="Ketik pesan"></textarea>
+          <div id="snippetMenu" class="snippet-menu hidden" role="listbox" aria-label="Balasan hashtag"></div>
+        </div>
+        <button id="sendBtn" class="wa-send-btn" type="submit" title="Kirim" aria-label="Kirim">➤</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<div id="snippetModal" class="modal-backdrop hidden" aria-hidden="true">
+  <div class="modal-card snippet-modal" role="dialog" aria-modal="true" aria-labelledby="snippetModalTitle">
+    <div class="modal-header">
+      <div>
+        <strong id="snippetModalTitle">Balasan Hashtag</strong>
+        <span>Tambah, edit, cari, dan pakai balasan cepat seperti LiveChat.</span>
+      </div>
+      <button id="closeSnippetModal" class="modal-close" type="button" aria-label="Tutup">×</button>
+    </div>
+
+    <div class="snippet-modal-body">
+      <aside class="snippet-library">
+        <div class="snippet-library-toolbar">
+          <input id="snippetSearch" type="text" placeholder="Cari hashtag atau isi balasan">
+          <button id="newSnippetBtn" class="mini-btn primary" type="button">+ Baru</button>
+        </div>
+        <div id="snippetLibraryList" class="snippet-library-list"></div>
+      </aside>
+
+      <section class="snippet-editor">
+        <form id="snippetForm" class="snippet-form">
+          <input id="snippetId" type="hidden">
+          <label>
+            <span>Hashtag</span>
+            <div class="hash-input-wrap">
+              <span>#</span>
+              <input id="snippetShortcut" type="text" placeholder="contoh: wd" maxlength="60" required>
+            </div>
+          </label>
+          <label>
+            <span>Judul</span>
+            <input id="snippetTitle" type="text" placeholder="Judul balasan" maxlength="120" required>
+          </label>
+          <label>
+            <span>Urutan</span>
+            <input id="snippetSort" type="number" min="0" max="9999" value="0">
+          </label>
+          <label>
+            <span>Isi balasan</span>
+            <textarea id="snippetContent" rows="10" placeholder="Tulis isi balasan hashtag di sini..." required></textarea>
+          </label>
+          <label class="snippet-active-row">
+            <input id="snippetActive" type="checkbox" checked>
+            <span>Aktif</span>
+          </label>
+          <div class="snippet-form-actions">
+            <button id="deleteSnippetBtn" class="mini-btn danger hidden" type="button">Hapus</button>
+            <div class="snippet-form-actions-right">
+              <button id="resetSnippetBtn" class="mini-btn" type="button">Reset</button>
+              <button class="mini-btn primary" type="submit">Simpan</button>
+            </div>
+          </div>
+          <div id="snippetFormStatus" class="form-status hidden"></div>
+        </form>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/app.js?v=3.0.1"></script>
+</body>
+</html>
